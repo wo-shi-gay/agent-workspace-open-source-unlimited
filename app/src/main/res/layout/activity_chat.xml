@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  对话页布局：原生顶栏（原样）+ 背景层（保留）。
+
+  背景层放在最底下铺满屏幕，上面叠原来的原生结构。
+  为了让背景能透出来，消息列表的背景色由 ChatActivity 按背景类型决定：
+    - 默认背景 → 纸面色（和以前一样）
+    - 纯色/图片/动态/视频 → 透明（背景层透上来）
+  顶栏保持原生不透明，和最初一致。
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/paper">
+
+    <!-- ============ 背景层（仅消息区域透出） ============ -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/chat_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+        <!-- ============ 原来的原生结构 ============ -->
+    <LinearLayout
+        android:id="@+id/chat_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
+
+        <!-- ⚠ 2026-11-04 顶栏与列表改为「分层叠加」（照抄 RikkaHub 的 Scaffold 结构）。
+             原版 ChatPage.kt:321-341 是 Scaffold(topBar = {...}) { innerPadding -> ChatList(...) }：
+             列表**铺满整个 Scaffold**，靠 contentPadding.top 让出顶栏高度；顶栏是叠在
+             列表上面的一层透明 View。这样消息往上滚时会从顶栏底下穿过去，
+             再由 ChatList.kt:194-209 的 topFadingEdge 用 DstIn 掩码把它渐隐掉 ——
+             这就是原版「字能透出去」的效果。
+
+             我们之前是 LinearLayout 上下分区：顶栏一个 ComposeView、列表另一个，
+             两块各占各的位置永不重叠，字自然透不出来。现在改成 FrameLayout 叠加：
+             messages 铺满，topbar 透明浮在上面。 -->
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:minHeight="0dp">
+
+            <!-- 消息列表：铺满整个区域（含顶栏所占的那块），
+                 它自己用 contentTopPadding 让出顶栏高度。 -->
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/compose_messages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- 顶栏：透明，浮在列表之上。高度交给 TopAppBar 自己
+                 （默认 64dp + 状态栏 inset）。 -->
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/compose_topbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top" />
+        </FrameLayout>
+
+        <!-- Composer is Compose-owned (growing field, chips, send/stop morph). -->
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_composer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Hidden text buffer: send()/attachments still read the EditText, and its
+             watcher mirrors the text into the Compose composer. INVISIBLE (not GONE)
+             keeps it measured so the watcher and programmatic setText stay reliable. -->
+        <EditText
+            android:id="@+id/input"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:visibility="invisible"
+            android:inputType="textMultiLine"
+            android:importantForAutofill="no" />
+    </LinearLayout>
+
+    <!-- ============ AI 浏览器层（全屏，WebView 永远住在这里） ============
+         设计要点：WebView 一旦创建就不再搬家、不 removeView、不改父容器。
+
+         为什么：WebView 的渲染状态（WebGL context、JS 堆、滚动位置、
+         表单已填内容、验证码进度）全绑定在 View 对象上。只要不 remove 它，
+         状态就永远不丢。反过来，任何一次 removeView 都会让 Chromium 收到
+         onWindowVisibilityChanged(INVISIBLE)，rAF 立刻停摆。
+
+         所以「藏」和「露」完全靠 z 序：
+           · AI 阶段   → chat_content 盖在上面，用户看不见，但 WebView 全屏
+                         渲染，尺寸不变、可见性不变，JS 一直跑
+           · 用户接管  → ai_browser_layer.bringToFront()，一瞬间浮到最上层
+
+         代价：AI 阶段被盖住的页面仍然全速渲染（毒蘑菇那种会满载）。
+               这是刻意接受的 —— 换来的是「永远不丢状态」。
+
+         结构：
+           [顶栏] ✕ 退出 ｜ 页面标题 / 副标题 ｜ 交给 AI
+           [2dp] 加载进度
+           [正文] ai_browser_slot —— WebView 的家，永不放别处
+    -->
+    <LinearLayout
+        android:id="@+id/ai_browser_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/paper"
+        android:visibility="gone"
+        android:fitsSystemWindows="true">
+
+        <!-- 顶栏 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="6dp"
+            android:paddingEnd="10dp"
+            android:background="@color/paper">
+
+            <ImageButton
+                android:id="@+id/ai_browser_close"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:contentDescription="退出接管"
+                android:tint="#666666" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/ai_browser_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="网页"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A" />
+
+                <TextView
+                    android:id="@+id/ai_browser_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="等待用户处理"
+                    android:textSize="11sp"
+                    android:textColor="#8A8A8A" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ai_browser_handback"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@drawable/_ai_browser_btn_bg"
+                android:text="交给 AI"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- 进度条：页面还在加载时显示 -->
+        <ProgressBar
+            android:id="@+id/ai_browser_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:max="100"
+            android:progress="0"
+            android:visibility="gone" />
+
+        <!-- WebView 舞台 -->
+        <FrameLayout
+            android:id="@+id/ai_browser_slot"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+</FrameLayout>

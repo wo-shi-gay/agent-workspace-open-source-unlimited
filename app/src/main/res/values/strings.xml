@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 无障碍保活服务（2026-11-04） -->
+    <string name="a11y_keepalive_label">Workspace 后台保活</string>
+    <string name="a11y_keepalive_desc">仅用于提升应用进程优先级，避免后台被系统清理。本服务不读取屏幕内容、不模拟点击或输入，也不收集任何信息。</string>
+    <!-- 终端文本选择（Termux TerminalView 移植，2026-11-12） -->
+    <string name="copy_text">复制</string>
+    <string name="paste_text">粘贴</string>
+    <string name="text_selection_more">更多</string>
+</resources>

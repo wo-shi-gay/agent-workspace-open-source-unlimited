@@ -1,0 +1,1 @@
+<resources><bool name="screen_control_supported">true</bool><string name="screen_control_label">Workspace 屏幕控制</string><string name="screen_control_accessibility_description">用户开启屏幕控制后，AI 可按任务读取界面、截图、点击、滑动和输入。通知栏显示停止控制按钮，可随时停止。后台保活服务与本服务独立。</string></resources>

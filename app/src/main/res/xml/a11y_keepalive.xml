@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  无障碍服务配置。
+
+  ⚠ 2026-11-04 用途：**仅用于保活**，不做任何界面读取或自动化操作。
+
+  为什么这条路有效：
+    无障碍服务（AccessibilityService）一旦被系统绑定，进程就会被系统按
+    「服务提供者」对待，优先级显著高于普通后台进程（adj 值更低），
+    在大多数 ROM 上不会被常规后台清理杀掉。这是免 root 场景下
+    最稳的保活手段之一。
+
+  能力声明保持最小：
+    - canRetrieveWindowContent="false" —— 我们完全不读界面内容，
+      不碰 window 树，不需要这个权限（也降低隐私风险与商店审核问题）
+    - 不声明任何 packageNames —— 全局生效，但不读取内容
+    - eventTypes 只留最低限度，实际不消费事件
+
+  用户在「系统设置 → 无障碍」里手动开启，App 内只做跳转与状态检测。
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canRetrieveWindowContent="false"
+    android:description="@string/a11y_keepalive_desc"
+    android:notificationTimeout="100" />

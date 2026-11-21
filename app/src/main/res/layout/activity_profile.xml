@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/paper" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="24dp">
+        <TextView android:id="@+id/back" android:layout_width="44dp" android:layout_height="44dp"
+            android:gravity="center" android:text="‹" android:textColor="@color/ink"
+            android:textSize="30sp" android:background="@drawable/bg_panel" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="28dp" android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="84dp" android:layout_height="84dp"
+                android:background="@drawable/bg_accent" android:padding="22dp"
+                android:src="@drawable/ic_user" android:contentDescription="头像" />
+            <TextView android:id="@+id/profile_name" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_marginTop="14dp"
+                android:textColor="@color/ink" android:textSize="20sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" android:text="Workspace 账号"
+                android:textColor="@color/muted" android:textSize="12sp" />
+        </LinearLayout>
+        <TextView android:id="@+id/btn_wallet" android:layout_width="match_parent" android:layout_height="52dp"
+            android:layout_marginTop="32dp" android:gravity="center" android:text="钱包与卡密 · 余额 / 兑换 / 购买"
+            android:textColor="#3E7B4F" android:textSize="14sp" android:textStyle="bold"
+            android:background="@drawable/bg_panel" />
+        <TextView android:id="@+id/btn_market" android:layout_width="match_parent" android:layout_height="52dp"
+            android:layout_marginTop="12dp" android:gravity="center" android:text="应用市场 · 发布与管理"
+            android:textColor="#5267E8" android:textSize="14sp" android:textStyle="bold"
+            android:background="@drawable/bg_panel" />
+        <TextView android:id="@+id/btn_notification" android:layout_width="match_parent" android:layout_height="52dp"
+            android:layout_marginTop="12dp" android:gravity="center" android:text="通知中心 · 审核结果与公告"
+            android:textColor="#10131A" android:textSize="14sp" android:textStyle="bold"
+            android:background="@drawable/bg_panel" />
+        <TextView android:id="@+id/btn_logout" android:layout_width="match_parent" android:layout_height="52dp"
+            android:layout_marginTop="12dp" android:gravity="center" android:text="退出登录"
+            android:textColor="#D5455C" android:textSize="14sp" android:textStyle="bold"
+            android:background="@drawable/bg_panel" />
+    </LinearLayout>
+</ScrollView>

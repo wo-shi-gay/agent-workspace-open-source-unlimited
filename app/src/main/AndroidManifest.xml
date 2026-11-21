@@ -1,0 +1,164 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- 逆向模式：需要列出设备上已安装应用到 APK 路径 -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
+    <!-- 插件系统：host.device 能力（按插件权限声明 + 运行时授权才生效） -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Shizuku：查询 Shizuku 是否安装。
+         ⚠ QUERY_ALL_PACKAGES 上面（逆向模式那行）已经声明过 —— 同一权限
+         在 Manifest 里写两次会让 AGP 报 "duplicated with element declared at"
+         警告。这里只留注释说明用途，不再重复声明。 -->
+    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
+    <application android:name=".AgentApplication" android:theme="@style/Theme.AgentWorkspace" android:label="Workspace" android:largeHeap="true" android:allowBackup="true" android:supportsRtl="true" android:requestLegacyExternalStorage="true" android:preserveLegacyExternalStorage="true" android:usesCleartextTraffic="true" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher">
+        <activity android:name=".BootActivity" android:screenOrientation="portrait" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="false" />
+        <!-- ⚠ 2026-11-10：显式 adjustResize。
+             之前没写这个属性，系统默认 adjustUnspecified 在部分机型上会选成 adjustPan，
+             表现为键盘弹出时输入栏位置不对 / 被键盘压住。
+             ChatActivity 里是 setDecorFitsSystemWindows(window, true)，
+             窗口自己负责让位，所以 adjustResize 是正确搭配。 -->
+        <activity android:name=".ChatActivity" android:screenOrientation="portrait" android:exported="false" android:launchMode="standard" android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity android:name=".TerminalActivity" android:screenOrientation="portrait" android:exported="false" android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".ApiConfigActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".AuthActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".ProfileActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".DownloadEnvironmentActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".SystemManageActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".DeployServiceActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".MarketActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".NotificationActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".WalletActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".AnnouncementActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".AboutActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".ThemeActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".PromptActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".ImageGenConfigActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".ImageGalleryActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".ImagePreviewActivity" android:exported="false" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+        <activity android:name=".ChatBackgroundActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".McpActivity" android:screenOrientation="portrait" android:exported="false" />
+        <!-- 远程工作区（SSH）。照抄 RikkaHub 3.1.1 的 Workspace 页面。 -->
+        <activity android:name=".RemoteWorkspaceActivity" android:screenOrientation="portrait" android:exported="false" />
+        <!-- 数据迁移（4.6 导出，供 4.7 换包名后导入） -->
+        <activity android:name=".MigrationActivity" android:screenOrientation="portrait" android:exported="false" />
+        <!-- 数据导入（4.7 接收 4.6 的迁移包：zip 或文件夹） -->
+        <activity android:name=".DataImportActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".WebPreviewActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity
+            android:name=".DshWebActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:theme="@style/Theme.AgentWorkspace" />
+        <activity android:name=".VideoPreviewActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".ReverseImportActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".FileHistoryActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".PluginManagerActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".SkillsActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".DeployActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".LogActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".AdbPermissionActivity" android:screenOrientation="portrait" android:exported="false" />
+        <activity android:name=".WirelessAdbActivity" android:screenOrientation="portrait" android:exported="false" />
+        <service
+            android:name=".WorkingBubble"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="显示 AI 工作状态悬浮窗" />
+        </service>
+        <!-- ADB 级后台保活（仅在用户开启 ADB 权限时启动） -->
+        <service
+            android:name=".AdbKeepAliveService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="维持 ADB 权限下的后台运行" />
+        </service>
+
+        <!-- 无线调试「通知栏输入配对码」（2026-11-04）。
+             照抄 Shizuku AdbPairingService：用 mDNS 发现配对端口，
+             在通知栏用 RemoteInput 直接填 6 位码，无需切回 App。 -->
+        <service
+            android:name=".AdbPairingService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="无线调试配对期间保持前台以接收通知栏输入" />
+        </service>
+
+        <!-- 通知常驻保活（2026-11-04）。
+             前台服务 + 常驻通知，零特殊权限，是最通用的保活手段。 -->
+        <service
+            android:name=".KeepAliveNotificationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="保持 AI 任务在后台持续运行" />
+        </service>
+
+        <!-- 无障碍保活（2026-11-04 新增）。
+             只用于提升进程优先级，不读取窗口内容、不模拟操作：
+             canRetrieveWindowContent=false 见 res/xml/a11y_keepalive.xml。
+             用户需在「系统设置 → 无障碍」手动开启。 -->
+        <service
+            android:name=".KeepAliveAccessibilityService"
+            android:exported="true"
+            android:label="@string/a11y_keepalive_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/a11y_keepalive" />
+        </service>
+        <!-- Shizuku 授权 provider -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+        <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+        </provider>
+        <activity android:name=".ScreenControlActivity" android:exported="false" />
+        <service android:name=".screencontrol.ScreenControlService"
+            android:enabled="@bool/screen_control_supported" android:exported="true"
+            android:label="@string/screen_control_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/screen_control_service" />
+        </service>
+        <service android:name=".screencontrol.ScreenCaptureService" android:exported="false" android:foregroundServiceType="mediaProjection" />
+        <service android:name=".floating.AgentFloatingService" android:exported="false" android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="用户主动开启的可交互对话小窗" />
+        </service>
+        <service android:name=".screencontrol.ScreenControlNotificationService" android:exported="false" android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="显示屏幕控制状态并提供通知栏停止入口" />
+        </service>
+    </application>
+</manifest>

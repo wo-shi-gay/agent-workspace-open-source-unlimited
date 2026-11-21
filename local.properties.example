@@ -1,0 +1,7 @@
+# Copy to local.properties and set your own Android SDK path.
+sdk.dir=/path/to/android-sdk
+# Release signing is optional; fill with your own values when needed.
+# signing.storeFile=/path/to/your-release.jks
+# signing.storePassword=YOUR_STORE_PASSWORD
+# signing.keyAlias=YOUR_KEY_ALIAS
+# signing.keyPassword=YOUR_KEY_PASSWORD

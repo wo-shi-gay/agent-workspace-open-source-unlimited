@@ -1,0 +1,26 @@
+<resources>
+    <style name="Theme.AgentWorkspace" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/paper</item>
+        <item name="android:navigationBarColor">@color/paper</item>
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <!-- Rounded dialogs app-wide (framework AlertDialog otherwise renders
+             square corners on Material themes below API 28-ish). -->
+        <item name="android:dialogTheme">@style/RoundedDialog</item>
+        <item name="android:alertDialogTheme">@style/RoundedDialog</item>
+    </style>
+
+    <style name="RoundedDialog" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/bg_dialog_rounded</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:windowMinWidthMinor">85%</item>
+    </style>
+
+    <style name="ReasoningSheetAnimation">
+        <item name="android:windowEnterAnimation">@anim/sheet_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/sheet_slide_out</item>
+    </style>
+</resources>

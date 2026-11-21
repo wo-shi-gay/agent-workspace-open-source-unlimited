@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/paper" android:paddingTop="12dp">
+    <ScrollView android:id="@+id/page_scroll" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true" android:overScrollMode="never">
+        <LinearLayout android:id="@+id/page_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingBottom="24dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingTop="10dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AGENT WORKSPACE" android:textColor="@color/accent" android:textSize="11sp" android:letterSpacing="0.12" android:textStyle="bold" />
+                    <TextView android:id="@+id/greeting" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="你好，开始创造吧" android:textColor="@color/ink" android:textSize="25sp" android:textStyle="bold" />
+                </LinearLayout>
+                <ImageView android:id="@+id/avatar" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/bg_accent" android:padding="10dp" android:src="@drawable/ic_user" android:contentDescription="用户" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/hero_panel" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="22dp" android:background="@drawable/bg_accent" android:orientation="vertical" android:padding="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="让 Agent 替你推进工作" android:textColor="@color/surface" android:textSize="20sp" android:textStyle="bold" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="7dp" android:text="从一个清晰的目标开始，持续协作，直到任务完成。" android:textColor="#DCE2FF" android:textSize="13sp" />
+                <TextView android:id="@+id/new_task" android:layout_width="match_parent" android:layout_height="50dp" android:layout_marginTop="18dp" android:background="@drawable/bg_panel" android:gravity="center" android:text="＋  新建 Agent 任务" android:textColor="@color/accent" android:textSize="15sp" android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="horizontal">
+                <LinearLayout android:id="@+id/history_card" android:layout_width="0dp" android:layout_height="112dp" android:layout_weight="1" android:background="@drawable/bg_panel" android:orientation="vertical" android:padding="15dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="历史对话" android:textColor="@color/muted" android:textSize="12sp" />
+                    <TextView android:id="@+id/history_count" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="0" android:textColor="@color/ink" android:textSize="25sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="条会话记录" android:textColor="@color/success" android:textSize="11sp" />
+                </LinearLayout>
+                <Space android:layout_width="12dp" android:layout_height="1dp" />
+                <LinearLayout android:id="@+id/ai_status_card" android:layout_width="0dp" android:layout_height="112dp" android:layout_weight="1" android:background="@drawable/bg_panel" android:gravity="center_vertical" android:orientation="horizontal" android:padding="15dp">
+                    <ImageView android:id="@+id/ai_status_dot" android:layout_width="34dp" android:layout_height="34dp" android:src="@drawable/ic_status_checking" android:contentDescription="AI 状态" />
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AI 状态" android:textColor="@color/muted" android:textSize="12sp" />
+                        <TextView android:id="@+id/ai_status_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="7dp" android:text="检测中" android:textColor="@color/ink" android:textSize="16sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/ai_status_detail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="正在连接模型" android:textColor="@color/muted" android:textSize="10sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="25dp" android:gravity="center_vertical">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="最近工作" android:textColor="@color/ink" android:textSize="18sp" android:textStyle="bold" />
+                <TextView android:id="@+id/view_all" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="查看全部  ›" android:textColor="@color/accent" android:textSize="12sp" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/recent_item" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/bg_panel" android:orientation="vertical" android:padding="16dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+                    <TextView android:layout_width="36dp" android:layout_height="36dp" android:background="@drawable/bg_soft" android:gravity="center" android:text="✦" android:textColor="@color/accent" android:textSize="18sp" />
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:id="@+id/recent_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="最近还没有对话" android:textColor="@color/ink" android:textSize="15sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/recent_subtitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="新建一个 Agent 任务开始协作" android:textColor="@color/muted" android:textSize="12sp" />
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="进行中" android:textColor="@color/success" android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:id="@+id/api_panel" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/bg_panel" android:gravity="center_vertical" android:padding="16dp">
+                <TextView android:layout_width="36dp" android:layout_height="36dp" android:background="@drawable/bg_soft" android:gravity="center" android:text="⌁" android:textColor="@color/accent" android:textSize="20sp" />
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:layout_weight="1" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="API 与模型" android:textColor="@color/ink" android:textSize="15sp" android:textStyle="bold" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="配置连接，解锁更强大的 Agent" android:textColor="@color/muted" android:textSize="12sp" />
+                </LinearLayout>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="›" android:textColor="@color/muted" android:textSize="24sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout android:id="@+id/bottom_nav" android:layout_width="match_parent" android:layout_height="76dp" android:layout_marginStart="12dp" android:layout_marginEnd="12dp" android:layout_marginBottom="10dp" android:background="@drawable/bg_panel" android:gravity="center" android:orientation="horizontal" android:padding="6dp">
+        <TextView android:id="@+id/nav_workspace" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:gravity="center" android:text="⌂&#10;首页" android:textColor="@color/accent" android:textSize="12sp" />
+        <TextView android:id="@+id/nav_projects" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:gravity="center" android:text="□&#10;工作区" android:textColor="@color/muted" android:textSize="12sp" />
+        <TextView android:id="@+id/nav_history" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:gravity="center" android:text="◷\n历史" android:textColor="@color/muted" android:textSize="12sp" />
+        <TextView android:id="@+id/nav_api" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:gravity="center" android:text="⚙\n设置" android:textColor="@color/muted" android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

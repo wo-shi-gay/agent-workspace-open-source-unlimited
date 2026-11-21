@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-files-path name="workspaces" path="workspaces/" />
+    <files-path name="internal" path="." />
+    <!-- 数据迁移 4.6：迁移 zip 落在 App 专属外部目录的 migration/ 下。 -->
+    <external-files-path name="migration" path="migration/" />
+    <!-- 数据迁移 4.6：主落点是公共 Download/WorkspaceMigration/。
+         FileProvider 只认这里声明的 root，没声明就分享不了
+         （IllegalArgumentException: Failed to find configured root）。
+         external-path 覆盖整个外部存储，配合 grantUriPermissions 精确授权单个 URI。 -->
+    <external-path name="download_migration" path="Download/WorkspaceMigration/" />
+</paths>

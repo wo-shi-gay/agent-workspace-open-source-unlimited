@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  终端界面 —— 严格照抄 Termux 0.118.3 的 activity_termux.xml 结构。
+
+  与原版 activity_termux.xml 的对应关系：
+    · activity_termux_root_relative_layout → 这里同样先纵排「顶栏 + 会话条 + 画布」，再底部快捷键条
+    · terminal_view（com.termux.view.TerminalView）→ 同名同配置，含 scrollbars="vertical"
+    · terminal_toolbar_view_pager（37.5dp 黑底）→ 换成我们的两行 ExtraKeys 容器，高度保持一致
+  只额外加了两样主人点名要的东西：
+    1. 顶栏（返回按钮 + 标题 + 状态）
+    2. 会话切换条（横向滚动，Termux 原版放在左抽屉里，我们放顶部）
+  其余（无输入框、无自定义快捷键、按键由 ExtraKeys 矩阵生成）一律照原版，不自造。
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/term_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/term_bg">
+
+    <!-- ============ 顶栏（主人要的：返回 + 标题/状态） ============ -->
+    <LinearLayout
+        android:id="@+id/term_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="2dp"
+        android:paddingEnd="6dp"
+        android:background="@color/term_chrome">
+
+        <TextView
+            android:id="@+id/back"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:gravity="center"
+            android:text="‹"
+            android:textColor="@color/term_fg"
+            android:textSize="26sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="终端"
+                android:textColor="@color/term_fg"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/status_dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="●"
+                    android:textColor="@color/term_ok"
+                    android:textSize="8sp"
+                    android:paddingEnd="4dp" />
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
+                    android:text="就绪"
+                    android:textColor="@color/term_muted"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 顶栏不放中断键，中断键按老习惯放底部快捷条最左（见 extra_keys 区） -->
+        <TextView
+            android:id="@+id/new_session"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="＋"
+            android:textColor="@color/term_muted"
+            android:textSize="16sp"
+            android:background="@drawable/bg_term_key" />
+
+        <TextView
+            android:id="@+id/close_session"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:text="✕"
+            android:textColor="@color/term_danger"
+            android:textSize="13sp"
+            android:background="@drawable/bg_term_key" />
+    </LinearLayout>
+
+    <!-- ============ 会话切换（Termux 原版在左抽屉，我们放顶部） ============ -->
+    <HorizontalScrollView
+        android:id="@+id/sessions_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:scrollbars="none"
+        android:background="@color/term_chrome_alt">
+
+        <LinearLayout
+            android:id="@+id/sessions"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp" />
+    </HorizontalScrollView>
+
+    <!-- ============ 画布 ============ -->
+    <FrameLayout
+        android:id="@+id/term_canvas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/term_bg">
+
+        <com.termux.view.TerminalView
+            android:id="@+id/output"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:defaultFocusHighlightEnabled="false"
+            android:focusableInTouchMode="true"
+            android:scrollbars="vertical" />
+
+        <!-- 选中文本后的悬浮复制条（替换 Termux 原版那个朴素的 ActionMode） -->
+        <LinearLayout
+            android:id="@+id/copy_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_term_copypill"
+            android:elevation="6dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/btn_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="复制"
+                android:textColor="#FFFFFF"
+                android:textSize="12.5sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="16dp"
+                android:background="#33FFFFFF" />
+
+            <TextView
+                android:id="@+id/btn_copy_cancel"
+                android:layout_width="34dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="✕"
+                android:textColor="#C9D2E0"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- ============ 底部快捷键条（照原版 37.5dp，两行 ExtraKeys） ============ -->
+    <LinearLayout
+        android:id="@+id/extra_keys_row"
+        android:layout_width="match_parent"
+        android:layout_height="37.5dp"
+        android:orientation="horizontal"
+        android:background="@color/term_chrome_alt">
+
+        <!-- 中断键：跟以前一样的「Ctrl+C」，常驻最左，点一下就打断当前命令 -->
+        <TextView
+            android:id="@+id/btn_interrupt"
+            android:layout_width="64dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Ctrl+C"
+            android:textColor="@color/term_danger"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:contentDescription="中断当前命令" />
+
+        <LinearLayout
+            android:id="@+id/extra_keys"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" />
+    </LinearLayout>
+</LinearLayout>

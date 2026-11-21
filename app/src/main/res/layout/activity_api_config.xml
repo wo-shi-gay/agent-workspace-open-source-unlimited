@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/paper" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="58dp" android:gravity="center_vertical">
+            <TextView android:id="@+id/back" android:layout_width="44dp" android:layout_height="44dp" android:gravity="center" android:text="‹" android:textColor="@color/ink" android:textSize="30sp" android:background="@drawable/bg_panel" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="API 配置" android:textColor="@color/ink" android:textSize="21sp" android:textStyle="bold" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="连接你的模型服务" android:textColor="@color/muted" android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:text="Base URL" android:textColor="@color/muted" android:textSize="12sp" />
+        <EditText android:id="@+id/base_url" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:hint="https://api.example.com/v1" android:singleLine="true" android:background="@drawable/bg_soft" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/ink" android:textColorHint="@color/muted" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:text="API Key" android:textColor="@color/muted" android:textSize="12sp" />
+        <EditText android:id="@+id/api_key" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:hint="输入 API Key" android:singleLine="true" android:inputType="textPassword" android:background="@drawable/bg_soft" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/ink" android:textColorHint="@color/muted" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:text="模型" android:textColor="@color/muted" android:textSize="12sp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:gravity="center_vertical">
+            <EditText android:id="@+id/model" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:hint="例如 gpt-4.1" android:singleLine="true" android:background="@drawable/bg_soft" android:paddingStart="14dp" android:paddingEnd="14dp" android:textColor="@color/ink" android:textColorHint="@color/muted" />
+            <TextView android:id="@+id/fetch_models" android:layout_width="96dp" android:layout_height="match_parent" android:layout_marginStart="8dp" android:gravity="center" android:text="获取模型" android:textColor="@color/accent" android:textSize="12sp" android:textStyle="bold" android:background="@drawable/bg_soft" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_soft" android:padding="14dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="思考过程回传上下文" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="将 AI 的思考内容加入后续请求上下文（思考过程始终会保存到本地）" android:textColor="@color/muted" android:textSize="11sp" />
+            </LinearLayout>
+            <Switch android:id="@+id/switch_reasoning_context" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" />
+        </LinearLayout>
+        <TextView android:id="@+id/save" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="24dp" android:gravity="center" android:text="保存配置" android:textColor="@color/surface" android:textSize="14sp" android:textStyle="bold" android:background="@drawable/bg_accent" />
+        <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:gravity="center" android:textColor="@color/muted" android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

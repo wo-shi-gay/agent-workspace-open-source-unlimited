@@ -1,0 +1,70 @@
+name: Build and release open source APK
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: open-gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: open-gradle-${{ runner.os }}-
+      - name: Install SDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install 'platforms;android-37.0' 'build-tools;37.0.0' 'platform-tools'
+      - name: Prepare dedicated open source signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.OPEN_SOURCE_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.OPEN_SOURCE_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.OPEN_SOURCE_KEY_ALIAS }}
+        run: |
+          test -n "$KEYSTORE_BASE64"
+          test -n "$KEYSTORE_PASSWORD"
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/opensource.jks"
+          echo "SIGNING_STORE_FILE=$RUNNER_TEMP/opensource.jks" >> "$GITHUB_ENV"
+          echo "SIGNING_STORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "SIGNING_KEY_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "SIGNING_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+      - name: Build release
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease -Pr8.minify=true --console=plain --stacktrace
+      - name: Collect and verify
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/release/app-release.apk dist/Workspace-5.2.2-open-source.apk
+          "$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --verbose --print-certs dist/*.apk | tee dist/signature.txt
+          (cd dist && sha256sum *.apk > SHA256SUMS)
+          printf 'Open source 5.2.2 / vc66.\nPackage: com.agentpad.workspace.opensource\nBackend, official-model endpoints and market credential are placeholders (https://example.com).\nConfigure your own services before using corresponding network features.\nDedicated open-source signing key; can coexist with the website edition.\n' > dist/RELEASE-NOTES.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Workspace-5.2.2-open-source
+          path: dist/*
+      - name: Publish tagged release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* --title 'Workspace 5.2.2 开源版' --notes-file dist/RELEASE-NOTES.txt
+      - name: Remove temporary key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/opensource.jks"
